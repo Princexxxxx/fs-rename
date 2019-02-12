@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 let filePath = process.argv[2]; // 获取输入的参数
+let fileObj = {};
 
 // 执行
 readFile(filePath);
@@ -35,6 +36,9 @@ function readFile(filePath) {
                             if(isVue && isCamelFile) {
                                 // 修改文件名
                                 replaceName(filePath, filename);
+
+                                // 写入file
+                                writeFile(filename);
                             }
                         }
                         if (isDir) {
@@ -57,6 +61,7 @@ function checkCamelFile(fileName) {
 
 /**
  * 重命名文件 CamelCase || PascalCase => kebab-case
+ * @param filePath 文件相对路径
  * @param fileName 文件名
  */
 function replaceName(filePath, filename) {
@@ -70,6 +75,21 @@ function replaceName(filePath, filename) {
 
         if (!err) {
             console.log(filename + ' is done');
+        }
+    });
+}
+
+/**
+ * 将修改的文件数据写入file
+ * @param fileName 文件名
+ */
+function writeFile(filename) {
+    const newFileName = filename.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase();
+    fileObj[filename] = newFileName;
+
+    fs.writeFile('./data.json', JSON.stringify(fileObj), 'utf8', err => {
+        if(err) {
+            console.warn(err);
         }
     });
 }
