@@ -55,7 +55,9 @@ function readDir(filePath) {
                                 Object.keys(fileDataMap).forEach(item => {
                                     fileData = fileData.replace(new RegExp(`/${item}`, 'g'), `/${fileDataMap[item]}`). // 匹配/platformManage.vue
                                                         replace(new RegExp(`/${item}'`, 'g'), `/${fileDataMap[item]}'`). // 匹配/platformManage.vue'
-                                                        replace(new RegExp(`/${item.split('.')[0]}'`, 'g'), `/${fileDataMap[item]}'`); // 匹配/platformManage'
+                                                        replace(new RegExp(`/${item}"`, 'g'), `/${fileDataMap[item]}"`). // 匹配/platformManage.vue"
+                                                        replace(new RegExp(`/${item.split('.')[0]}'`, 'g'), `/${fileDataMap[item]}'`). // 匹配/platformManage'
+                                                        replace(new RegExp(`/${item.split('.')[0]}"`, 'g'), `/${fileDataMap[item]}"`); // 匹配/platformManage"
                                 });
 
                                 // 更新file

@@ -34,15 +34,17 @@ function readFile(filePath) {
 
                         if (isFile) {
                             if(isVue && isCamelFile) {
-                                // 修改文件名
-                                replaceName(filePath, filename);
-
                                 // 写入file
                                 writeFile(filename);
+
+                                // 修改文件名
+                                replaceName(filePath, filename);
                             }
                         }
                         if (isDir) {
-                            readFile(filedir); // 递归，如果是文件夹就继续遍历
+                            if(!filedir.includes('/assets')) {
+                                readFile(filedir); // 递归，如果是文件夹就继续遍历
+                            }
                         }
                     }
                 })
@@ -56,7 +58,7 @@ function readFile(filePath) {
  * @param fileName 文件名
  */
 function checkCamelFile(fileName) {
-    return /([a-z])([A-Z])/.test(fileName);
+    return /([a-z])([A-Z])/.test(fileName) || /([A-Z])/.test(fileName);
 }
 
 /**
@@ -66,7 +68,7 @@ function checkCamelFile(fileName) {
  */
 function replaceName(filePath, filename) {
     const oldPath = filePath + '/' + filename;
-    const newPath = filePath + '/' + filename.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase();
+    const newPath = filePath + '/' + filename.toKebabCase();
 
     fs.rename(oldPath, newPath, err => {
         if (err) {
@@ -84,7 +86,7 @@ function replaceName(filePath, filename) {
  * @param fileName 文件名
  */
 function writeFile(filename) {
-    const newFileName = filename.replace(/([a-z])([A-Z])/, '$1-$2').toLowerCase();
+    const newFileName = filename.toKebabCase();
     fileObj[filename] = newFileName;
 
     fs.writeFile('./data.json', JSON.stringify(fileObj), 'utf8', err => {
@@ -93,3 +95,19 @@ function writeFile(filename) {
         }
     });
 }
+
+String.prototype.toKebabCase = function() {
+    const regex = /[A-Z]/g;
+
+	return fistLetterLower(this).replace(regex, word => {
+		return '-' + word.toLowerCase();
+	});
+}
+
+/**
+ * 将单个字符串的首字母小写
+ * @param str 字符串
+ */
+function fistLetterLower (str) {
+    return str.charAt(0).toLowerCase() + str.slice(1);
+};
