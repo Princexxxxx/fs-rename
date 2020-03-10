@@ -50,7 +50,7 @@ const readFile = function(fileName) {
                         </body>
                     </html>`;
 
-    fs.writeFile("./private-sign@4.2-icon.html", htmlContent, "utf8", err => {
+    fs.writeFile("./private-oss@4.2-icon.html", htmlContent, "utf8", err => {
         if (err) return console.log(err);
 
         if (!err) {
