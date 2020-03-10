@@ -35,6 +35,9 @@ function readDir(filePath) {
         } else {
             // 遍历读取到的文件列表
             files.map(filename => {
+                const extname = path.extname(filename);
+                console.log('extname: ', extname);
+
                 // 获取当前文件的绝对路径
                 const fileDir = path.join(filePath, filename);
 
@@ -45,33 +48,34 @@ function readDir(filePath) {
                     } else {
                         const isFile = stats.isFile(); // 是文件
                         const isDir = stats.isDirectory(); // 是文件夹
+                        const fileReg = /.vue|.less/;
 
                         if (isFile) {
-                            (async function () {
-                                let fileData = await readFile(fileDir);
-                                fileData = fileData.toString();
+                            // 只处理vue、less文件
+                            if(fileReg.test(extname)) {
+                                (async function () {
+                                    let fileData = await readFile(fileDir);
+                                    fileData = fileData.toString();
 
-                                // 遍历键值对进行文件名替换
-                                Object.keys(fileDataMap).forEach(item => {
-                                    fileData = fileData.replace(new RegExp(`/${item}`, 'g'), `/${fileDataMap[item]}`). // 匹配/platformManage.vue
-                                                        replace(new RegExp(`/${item}'`, 'g'), `/${fileDataMap[item]}'`). // 匹配/platformManage.vue'
-                                                        replace(new RegExp(`/${item}"`, 'g'), `/${fileDataMap[item]}"`). // 匹配/platformManage.vue"
-                                                        replace(new RegExp(`/${item.split('.')[0]}'`, 'g'), `/${fileDataMap[item]}'`). // 匹配/platformManage'
-                                                        replace(new RegExp(`/${item.split('.')[0]}"`, 'g'), `/${fileDataMap[item]}"`); // 匹配/platformManage"
-                                });
+                                    // 遍历键值对进行文件名替换
+                                    Object.keys(fileDataMap).forEach(item => {
+                                        fileData = fileData.replace(new RegExp(`${item}`, 'g'), `${fileDataMap[item]}`);
+                                    });
 
-                                // 更新file
-                                fs.writeFile(fileDir, fileData, 'utf8', (err) => {
-                                    if (err) return console.log(err);
+                                    // 更新file
+                                    fs.writeFile(fileDir, fileData, 'utf8', (err) => {
+                                        if (err) return console.log(err);
 
-                                    if(!err) {
-                                        console.log(fileDir + '写入成功！');
-                                    }
-                                });
-                            })();
+                                        if(!err) {
+                                            console.log(fileDir + '写入成功！');
+                                        }
+                                    });
+                                })();
+                            }
                         }
+
                         if (isDir) {
-                            if(!fileDir.includes('/assets')) {
+                            if(!fileDir.includes('/element-ui')) {
                                 readDir(fileDir); // 递归，如果是文件夹就继续遍历
                             }
                         }
