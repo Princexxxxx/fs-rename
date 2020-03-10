@@ -23,6 +23,9 @@ const readFile = function (fileName) {
     readDir(filePath);
 })();
 
+
+let iconResult = [];
+
 /**
  * 文件遍历方法
  * @param filePath 需要遍历的文件路径
@@ -48,20 +51,19 @@ function readDir(filePath) {
 
                         if (isFile) {
                             (async function () {
+                                const iconReg = /el-icon-[a-z0-9]+(-[a-z0-9]+)?/g;
                                 let fileData = await readFile(fileDir);
                                 fileData = fileData.toString();
+                                const icons = fileData.match(iconReg);
 
-                                // 遍历键值对进行文件名替换
-                                Object.keys(fileDataMap).forEach(item => {
-                                    fileData = fileData.replace(new RegExp(`/${item}`, 'g'), `/${fileDataMap[item]}`). // 匹配/platformManage.vue
-                                                        replace(new RegExp(`/${item}'`, 'g'), `/${fileDataMap[item]}'`). // 匹配/platformManage.vue'
-                                                        replace(new RegExp(`/${item}"`, 'g'), `/${fileDataMap[item]}"`). // 匹配/platformManage.vue"
-                                                        replace(new RegExp(`/${item.split('.')[0]}'`, 'g'), `/${fileDataMap[item]}'`). // 匹配/platformManage'
-                                                        replace(new RegExp(`/${item.split('.')[0]}"`, 'g'), `/${fileDataMap[item]}"`); // 匹配/platformManage"
-                                });
+                                if(icons) {
+                                    iconResult = [...iconResult, ...icons];
+                                }
+
+                                iconResult = [...new Set(iconResult)];
 
                                 // 更新file
-                                fs.writeFile(fileDir, fileData, 'utf8', (err) => {
+                                fs.writeFile('./icon.json', JSON.stringify(iconResult), 'utf8', (err) => {
                                     if (err) return console.log(err);
 
                                     if(!err) {
@@ -71,9 +73,7 @@ function readDir(filePath) {
                             })();
                         }
                         if (isDir) {
-                            if(!fileDir.includes('/assets')) {
-                                readDir(fileDir); // 递归，如果是文件夹就继续遍历
-                            }
+                            readDir(fileDir); // 递归，如果是文件夹就继续遍历
                         }
                     }
                 })
