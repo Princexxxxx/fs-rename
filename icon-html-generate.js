@@ -1,3 +1,7 @@
+/**
+ * 将代码中不再引用的图标放到可视化界面展示
+ */
+
 const fs = require("fs");
 
 const readFile = function(fileName) {
@@ -12,7 +16,7 @@ const readFile = function(fileName) {
 
 // 读取文件名键值对
 (async function() {
-    const data = await readFile("./iconfont.json");
+    const data = await readFile("./private-sign@4.2-iconfont-unused.json"); // 读取不再使用的icon
     fileDataMap = JSON.parse(data.toString());
 
     let htmlContent = "";
@@ -31,30 +35,8 @@ const readFile = function(fileName) {
                         ${iconHtml}
                     </ul>`;
 
-    // htmlContent = `<!DOCTYPE html>
-    //                 <html lang="en">
-    //                     <head>
-    //                         <meta charset="UTF-8">
-    //                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //                         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    //                         <title>Document</title>
-    //                         <link rel="stylesheet" href="https://unpkg.com/element-ui@2.11.0/lib/theme-chalk/index.css">
-
-    //                         <style>
-    //                             .container a {
-    //                                 display: inline-block;
-    //                                 width: 240px;
-    //                             }
-    //                         </style>
-    //                     </head>
-    //                     <body>
-    //                         <div class="container">
-    //                             ${iconHtml}
-    //                         </div>
-    //                     </body>
-    //                 </html>`;
-
-    fs.writeFile("./private-sign@4.2-iconfont.html", htmlContent, "utf8", err => {
+    // 将图标列表html写入文件
+    fs.writeFile("./private-sign@4.2-iconfont-unused.html", htmlContent, "utf8", err => {
         if (err) return console.log(err);
 
         if (!err) {

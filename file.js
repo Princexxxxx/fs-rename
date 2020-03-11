@@ -51,8 +51,14 @@ function readDir(filePath) {
 
                         if (isFile) {
                             (async function () {
-                                const iconReg = /["#\s]{1}icon-[a-zA-Z0-9-]+/g; // ali iconfont
+                                // const iconReg = /[.]{1}icon-[a-zA-Z0-9-]+/g; // ali iconfont 269
+                                const iconReg = /['"#\s]{1}icon-[a-zA-Z0-9-]+/g; // private-sign ali iconfont
                                 // const iconReg = /el-icon-[a-z0-9]+(-[a-z0-9]+)?/g; // el-icon
+
+                                // 网页抓取iconfont List
+                                // var iconList = document.querySelectorAll('.block-icon-list li>.icon-code-show');
+                                // var icons = Array.from(iconList).map(node => node.innerText);
+                                // var iconStr = JSON.stringify(icons);
 
                                 let fileData = await readFile(fileDir);
                                 fileData = fileData.toString();
@@ -60,7 +66,7 @@ function readDir(filePath) {
 
                                 if(icons) {
                                     icons = icons.map(item => {
-                                        return item.replace(/"/g, '').replace(/#/g, '').replace(/\s/g, '');
+                                        return item.replace(/'/g, '').replace(/"/g, '').replace(/#/g, '').replace(/\s/g, '');
                                     })
 
                                     iconResult = [...iconResult, ...icons];
