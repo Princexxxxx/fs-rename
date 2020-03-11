@@ -1,30 +1,18 @@
+/**
+ * 提取代码中iconfont引用
+ */
+
 const fs = require('fs');
 const path = require('path');
-
 let filePath = process.argv[2]; // 获取输入的参数
-let fileDataMap = {};
-
-const readFile = function (fileName) {
-    return new Promise((resolve, reject) => {
-        fs.readFile(fileName, (error, data) => {
-            if (error) return reject(error);
-
-            resolve(data);
-        });
-    });
-};
-
-// 读取文件名键值对
-(async function () {
-    const data = await readFile('./data.json');
-    fileDataMap = JSON.parse(data.toString());
-
-    // 执行
-    readDir(filePath);
-})();
-
-
 let iconResult = [];
+
+const iconReg = /['"#\s]{1}icon-[a-zA-Z0-9-]+/g; // private-sign ali iconfont
+// const iconReg = /[.]{1}icon-[a-zA-Z0-9-]+/g; // ali iconfont 269
+// const iconReg = /el-icon-[a-z0-9]+(-[a-z0-9]+)?/g; // el-icon
+
+// 执行
+readDir(filePath);
 
 /**
  * 文件遍历方法
@@ -51,15 +39,6 @@ function readDir(filePath) {
 
                         if (isFile) {
                             (async function () {
-                                // const iconReg = /[.]{1}icon-[a-zA-Z0-9-]+/g; // ali iconfont 269
-                                const iconReg = /['"#\s]{1}icon-[a-zA-Z0-9-]+/g; // private-sign ali iconfont
-                                // const iconReg = /el-icon-[a-z0-9]+(-[a-z0-9]+)?/g; // el-icon
-
-                                // 网页抓取iconfont List
-                                // var iconList = document.querySelectorAll('.block-icon-list li>.icon-code-show');
-                                // var icons = Array.from(iconList).map(node => node.innerText);
-                                // var iconStr = JSON.stringify(icons);
-
                                 let fileData = await readFile(fileDir);
                                 fileData = fileData.toString();
                                 let icons = fileData.match(iconReg);
@@ -95,3 +74,23 @@ function readDir(filePath) {
         }
     });
 }
+
+/**
+ * 异步读取文件方法
+ * @param {fileName} fileName
+ */
+const readFile = function (fileName) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(fileName, (error, data) => {
+            if (error) return reject(error);
+
+            resolve(data);
+        });
+    });
+};
+
+// 附录：
+// 网页抓取iconfont List
+// var iconList = document.querySelectorAll('.block-icon-list li>.icon-code-show');
+// var icons = Array.from(iconList).map(node => node.innerText);
+// var iconStr = JSON.stringify(icons);
