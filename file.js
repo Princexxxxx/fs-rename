@@ -51,19 +51,25 @@ function readDir(filePath) {
 
                         if (isFile) {
                             (async function () {
-                                const iconReg = /el-icon-[a-z0-9]+(-[a-z0-9]+)?/g;
+                                const iconReg = /["#\s]{1}icon-[a-zA-Z0-9-]+/g; // ali iconfont
+                                // const iconReg = /el-icon-[a-z0-9]+(-[a-z0-9]+)?/g; // el-icon
+
                                 let fileData = await readFile(fileDir);
                                 fileData = fileData.toString();
-                                const icons = fileData.match(iconReg);
+                                let icons = fileData.match(iconReg);
 
                                 if(icons) {
+                                    icons = icons.map(item => {
+                                        return item.replace(/"/g, '').replace(/#/g, '').replace(/\s/g, '');
+                                    })
+
                                     iconResult = [...iconResult, ...icons];
                                 }
 
                                 iconResult = [...new Set(iconResult)];
 
                                 // 更新file
-                                fs.writeFile('./icon.json', JSON.stringify(iconResult), 'utf8', (err) => {
+                                fs.writeFile('./iconfont.json', JSON.stringify(iconResult), 'utf8', (err) => {
                                     if (err) return console.log(err);
 
                                     if(!err) {
@@ -73,7 +79,9 @@ function readDir(filePath) {
                             })();
                         }
                         if (isDir) {
-                            readDir(fileDir); // 递归，如果是文件夹就继续遍历
+                            if(!fileDir.includes('/assets')) {
+                                readDir(fileDir); // 递归，如果是文件夹就继续遍历
+                            }
                         }
                     }
                 })

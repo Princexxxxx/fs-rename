@@ -12,7 +12,7 @@ const readFile = function(fileName) {
 
 // 读取文件名键值对
 (async function() {
-    const data = await readFile("./icon.json");
+    const data = await readFile("./iconfont.json");
     fileDataMap = JSON.parse(data.toString());
 
     let htmlContent = "";
@@ -20,37 +20,41 @@ const readFile = function(fileName) {
 
     fileDataMap.map((icon, index) => {
         iconHtml += `
-            <p>
-                <a>[${++index}] ${icon} : </a>
-                <i class="${icon}"></i>
-            </p>
+            <li class="dib">
+                <span class="icon iconfont ${icon}"></span>
+                <div class="code-name">${icon}</div>
+            </li>
         \n`;
     });
 
-    htmlContent = `<!DOCTYPE html>
-                    <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                            <title>Document</title>
-                            <link rel="stylesheet" href="https://unpkg.com/element-ui@2.11.0/lib/theme-chalk/index.css">
+    htmlContent = `<ul class="icon_lists dib-box">
+                        ${iconHtml}
+                    </ul>`;
 
-                            <style>
-                                .container a {
-                                    display: inline-block;
-                                    width: 240px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="container">
-                                ${iconHtml}
-                            </div>
-                        </body>
-                    </html>`;
+    // htmlContent = `<!DOCTYPE html>
+    //                 <html lang="en">
+    //                     <head>
+    //                         <meta charset="UTF-8">
+    //                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    //                         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    //                         <title>Document</title>
+    //                         <link rel="stylesheet" href="https://unpkg.com/element-ui@2.11.0/lib/theme-chalk/index.css">
 
-    fs.writeFile("./private-oss@4.2-icon.html", htmlContent, "utf8", err => {
+    //                         <style>
+    //                             .container a {
+    //                                 display: inline-block;
+    //                                 width: 240px;
+    //                             }
+    //                         </style>
+    //                     </head>
+    //                     <body>
+    //                         <div class="container">
+    //                             ${iconHtml}
+    //                         </div>
+    //                     </body>
+    //                 </html>`;
+
+    fs.writeFile("./private-sign@4.2-iconfont.html", htmlContent, "utf8", err => {
         if (err) return console.log(err);
 
         if (!err) {
