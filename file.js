@@ -25,7 +25,7 @@ const readFile = function (fileName) {
 
 /**
  * 文件遍历方法
- * @param filePath 需要遍历的文件路径
+ * @param filePath  需要遍历的文件路径
  */
 function readDir(filePath) {
     // 根据文件路径读取文件，返回文件列表
